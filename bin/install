@@ -17,11 +17,21 @@ install_MySQL() {
       FILE="mysql-${version}-linux*$(arch)*"
       ;;
     Darwin)
+      local arch
+      case "$(arch)" in
+        i386)
+          arch="x86_64"
+          ;;
+        *)
+          arch="arm64"
+          ;;
+      esac
+
       if (( MAJOR < 8 )); then
         # the mirrorservice listings for mysql-8.0 have updated to list macos11 as the OS association
         FILE="mysql-${version}-macos10*"
       else
-        FILE="mysql-${version}-macos11*"
+        FILE="mysql-${version}-macos11-${arch}*"
       fi
       ;;
     FreeBSD)
@@ -63,7 +73,7 @@ install_MySQL() {
   case "$MAJOR" in
     8)
       echo "To initialize a new database:"
-      echo "  asdf global ${version}"
+      echo "  asdf global mysql ${version}"
       echo "  export DATADIR=/path/to/data"
       echo "  mysqld --initialize-insecure --datadir=$DATADIR"
       echo "  mysql_ssl_rsa_setup --datadir=$DATADIR"
